@@ -8,22 +8,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="/favicon.ico">
 
     <title>@yield('title', 'Binpaste')</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="css/starter-template.css" rel="stylesheet">
+    <link href="/css/starter-template.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="js/ie-emulation-modes-warning.js"></script>
+    <script src="/js/ie-emulation-modes-warning.js"></script>
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="/js/ie10-viewport-bug-workaround.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -48,11 +48,18 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="/signup">Sign Up</a></li>
+            <li><a href="/login">Log In</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
+
+
+    @if(Session::get('flash_message'))
+        <div class='flash-message'>{{ Session::get('flash_message') }}</div>
+    @endif
 
     <div class="container starter-template">
       @yield('content')
