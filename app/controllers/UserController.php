@@ -3,7 +3,12 @@
 class UserController extends BaseController {
 
   public function __construct() {
-    # Put anything here that should happen before any of the other actions
+    $this->beforeFilter('guest',
+                        array('only' => array('getSignup', 'getLogin')));
+    $this->beforeFilter('csrf',
+                        array('only' => array('postSignup', 'postLogin')));
+    $this->beforeFilter('auth',
+                        array('only' => array('anyLogout')));
   }
 
 
