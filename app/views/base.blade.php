@@ -49,8 +49,12 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="#">Home</a></li>
+@if(Auth::check())
+            <li><a href="/logout">Log Out</a></li>
+@else
             <li><a href="/signup">Sign Up</a></li>
             <li><a href="/login">Log In</a></li>
+@endif
           </ul>
         </div><!--/.nav-collapse -->
       </div>

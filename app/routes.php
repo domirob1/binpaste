@@ -66,3 +66,14 @@ Route::post('/login', array('before' => 'csrf', function()
 
   return Redirect::to('/login');
 }));
+
+
+Route::get('/logout', function() {
+
+    # Log out
+    Auth::logout();
+
+    # Send them to the homepage
+    return Redirect::to('/');
+
+});
