@@ -3,7 +3,7 @@
 @section('content')
   <h2>Sign Up</h2>
 
-  {{ Form::open(array('url' => '/user/signup')) }}
+  {{ Form::open(array('url' => '/users/signup')) }}
 
   <p>
     {{ Form::label('email', 'Email Address') }}

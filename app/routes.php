@@ -17,4 +17,4 @@ Route::get('/', function()
 });
 
 
-Route::controller('user', 'UserController');
+Route::controller('users', 'UserController');

@@ -12,19 +12,19 @@ class UserController extends BaseController {
   }
 
 
-  # GET: http://localhost/user
+  # GET: http://localhost/users
   public function getIndex() {
     return 'fuck off';
   }
 
 
-  # GET: http://localhost/user/signup
+  # GET: http://localhost/users/signup
   public function getSignup() {
     return View::make('signup');
   }
 
 
-  # POST: http://localhost/user/signup
+  # POST: http://localhost/users/signup
   public function postSignup() {
     $user = new User;
     $user->email = Input::get('email');
@@ -36,7 +36,7 @@ class UserController extends BaseController {
     }
     # Fail
     catch (Exception $e) {
-      return Redirect::to('/user/signup')->with('flash_message',
+      return Redirect::to('/users/signup')->with('flash_message',
         'Sign up failed; please try again.')
         ->withInput();
     }
@@ -48,14 +48,14 @@ class UserController extends BaseController {
   }
 
 
-  # GET: http://localhost/user/login
+  # GET: http://localhost/users/login
   public function getLogin() {
     return View::make('login');
 
   }
 
 
-  # POST: http://localhost/user/login
+  # POST: http://localhost/users/login
   public function postLogin() {
     $credentials = Input::only('email', 'password');
 
@@ -63,14 +63,14 @@ class UserController extends BaseController {
       return Redirect::intended('/')->with('flash_message', 'Welcome Back!');
     }
     else {
-      return Redirect::to('/user/login')->with('flash_message', 'Log in failed; please try again.');
+      return Redirect::to('/users/login')->with('flash_message', 'Log in failed; please try again.');
     }
 
-    return Redirect::to('/user/login');
+    return Redirect::to('/users/login');
   }
 
 
-  # ANY: http://localhost/user/logout
+  # ANY: http://localhost/users/logout
   public function anyLogout() {
     Auth::logout();
 
