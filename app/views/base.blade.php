@@ -48,7 +48,9 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="#">Home</a></li>
+            <li><a href="">Home</a></li>
+            <li><a href="/pastes">Pastes</a></li>
+            <li><a href="/pastes/create">New Paste</a></li>
 @if(Auth::check())
             <li><a href="/users/logout">Log Out ({{ Auth::user()->email }})</a></li>
 @else
@@ -62,7 +64,7 @@
 
 
     @if(Session::get('flash_message'))
-        <div class='flash-message'>{{ Session::get('flash_message') }}</div>
+        <div class='container starter-template flash-message'>{{ Session::get('flash_message') }}</div>
     @endif
 
     <div class="container starter-template">

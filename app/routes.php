@@ -18,3 +18,4 @@ Route::get('/', function()
 
 
 Route::controller('users', 'UserController');
+Route::resource('pastes', 'PasteController');

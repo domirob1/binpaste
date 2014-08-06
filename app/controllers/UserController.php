@@ -14,7 +14,7 @@ class UserController extends BaseController {
 
   # GET: http://localhost/users
   public function getIndex() {
-    return 'fuck off';
+    return Redirect::to('/');
   }
 
 
@@ -29,6 +29,7 @@ class UserController extends BaseController {
     $user = new User;
     $user->email = Input::get('email');
     $user->password = Hash::make(Input::get('password'));
+    $user->remember_token = True;
 
     # Try to add the user
     try {
