@@ -14,7 +14,7 @@ class UserController extends BaseController {
 
   # GET: http://localhost/users
   public function getIndex() {
-    return Redirect::to('/');
+    return Redirect::to('/pastes');
   }
 
 
@@ -45,7 +45,7 @@ class UserController extends BaseController {
     # Log the user in
     Auth::login($user);
 
-    return Redirect::to('/')->with('flash_message', 'Welcome to Binpaste!');
+    return Redirect::to('/pastes')->with('flash_message', 'Welcome to Binpaste!');
   }
 
 

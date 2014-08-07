@@ -44,14 +44,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Binpaste</a>
+          <a class="navbar-brand" href="/">Binpaste</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="">Home</a></li>
+@if(Auth::check())
             <li><a href="/pastes">Pastes</a></li>
             <li><a href="/pastes/create">New Paste</a></li>
-@if(Auth::check())
             <li><a href="/users/logout">Log Out ({{ Auth::user()->email }})</a></li>
 @else
             <li><a href="/users/signup">Sign Up</a></li>

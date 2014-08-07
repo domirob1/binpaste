@@ -3,8 +3,8 @@
 @section('content')
 
 <div>
-  <h4>{{{ $paste->name }}}</h4>
-  <textarea cols="80">{{{ $paste->paste }}}</textarea>
+  <h4>{{{ $paste->name }}} ({{{ $paste->public ? 'public' : 'private' }}})</h4>
+  <textarea cols="80" readonly>{{{ $paste->paste }}}</textarea>
 </div>
 
 <div>

@@ -14,7 +14,12 @@ class PasteController extends BaseController {
 	 */
 	public function index()
 	{
-    return View::make('paste_index')->with('pastes', Auth::user()->pastes);
+    $my_pastes = Auth::user()->pastes;
+    $public_pastes = Paste::where('public', '=', True)->get();
+    $public_pastes = $public_pastes->filter(function ($paste) {
+                       return $paste->user_id != Auth::user()->id;});
+    return View::make('paste_index', ['my_pastes' => $my_pastes,
+                                      'public_pastes' => $public_pastes]);
 	}
 
 
@@ -39,6 +44,7 @@ class PasteController extends BaseController {
     $paste = new Paste;
     $paste->name = Input::get('name');
     $paste->paste = Input::get('paste');
+    $paste->public = Input::get('public');
     $paste->user()->associate(Auth::user());
 
     try {
@@ -61,10 +67,10 @@ class PasteController extends BaseController {
 	 */
 	public function show($id)
 	{
-    $paste = Paste::find($id);
-    if ($paste->user != Auth::user()) {
+    $paste = Paste::findOrFail($id);
+    if (!$paste->public && ($paste->user != Auth::user())) {
       return Redirect::to('/pastes')->with('flash_message',
-                                           'That flash isn\'t yours.');
+                                           'That paste isn\'t yours.');
     }
     return View::make('paste_show')->with('paste', $paste);
 	}
@@ -78,10 +84,10 @@ class PasteController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		$paste = Paste::find($id);
+		$paste = Paste::findOrFail($id);
     if ($paste->user != Auth::user()) {
       return Redirect::to('/pastes')->with('flash_message',
-                                           'That flash isn\'t yours.');
+                                           'That paste isn\'t yours.');
     }
     return View::make('paste_edit')->with('paste', $paste);
 	}
@@ -95,13 +101,14 @@ class PasteController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$paste = Paste::find($id);
+		$paste = Paste::findOrFail($id);
     if ($paste->user != Auth::user()) {
       return Redirect::to('/pastes')->with('flash_message',
-                                           'That flash isn\'t yours.');
+                                           'That paste isn\'t yours.');
     }
     $paste->name = Input::get('name');
     $paste->paste = Input::get('paste');
+    $paste->public = Input::get('public');
     try {
       $paste->save();
     } catch (Exception $e) {
@@ -122,10 +129,10 @@ class PasteController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		$paste = Paste::find($id);
+		$paste = Paste::findOrFail($id);
     if ($paste->user != Auth::user()) {
       return Redirect::to('/pastes')->with('flash_message',
-                                           'That flash isn\'t yours.');
+                                           'That paste isn\'t yours.');
     }
     try {
       $paste->delete();

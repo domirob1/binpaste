@@ -16,8 +16,14 @@
 </p>
 
 <p>
+  {{ Form::label('public', 'Public') }}
+  {{ Form::checkbox('public') }}
+</p>
+
+<p>
   {{ Form::submit('Paste It') }}
 </p>
+
 
 {{ Form::close() }}
 @stop
