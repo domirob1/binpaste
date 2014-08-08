@@ -1,29 +1,41 @@
 @extends('base')
 
 @section('content')
-<h2>New Paste</h2>
 
-{{ Form::open(array('url' => '/pastes')) }}
+<div class="page-header">
+  <h1>New Paste</h1>
+</div>
 
-<p>
-  {{ Form::label('name', 'Paste Name') }}
-  {{ Form::text('name') }}
-</p>
+{{ Form::open(['url' => '/pastes',
+               'class' => 'form-horizontal',
+               'role' => 'form']) }}
 
-<p>
-  {{ Form::label('paste', 'Paste') }}
-  {{ Form::textarea('paste') }}
-</p>
+<div class="form-group">
+  {{ Form::label('name', 'Paste Name', ['class' => 'col-sm-2 control-label']) }}
+  <div class="col-sm-10">
+    {{ Form::text('name', NULL, ['class' => 'form-control']) }}
+  </div>
+</div>
 
-<p>
-  {{ Form::label('public', 'Public') }}
-  {{ Form::checkbox('public') }}
-</p>
+<div class="form-group">
+  {{ Form::label('public', 'Public', ['class' => 'col-sm-2 control-label']) }}
+  <div class="col-sm-10">
+    {{ Form::checkbox('public', NULL, ['class' => 'form-control']) }}
+  </div>
+</div>
 
-<p>
-  {{ Form::submit('Paste It') }}
-</p>
+<div class="form-group">
+  {{ Form::label('paste', 'Paste', ['class' => 'col-sm-2 control-label']) }}
+  <div class="col-sm-10">
+    {{ Form::textarea('paste', NULL, ['class' => 'form-control']) }}
+  </div>
+</div>
 
+<div class="form-group">
+  <div class="col-sm-offset-2 col-sm-10">
+    {{ Form::submit('Paste It', ['class' => 'btn btn-default']) }}
+  </div>
+</div>
 
 {{ Form::close() }}
 @stop

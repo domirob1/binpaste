@@ -4,11 +4,11 @@ class UserController extends BaseController {
 
   public function __construct() {
     $this->beforeFilter('guest',
-                        array('only' => array('getSignup', 'getLogin')));
+      array('only' => array('getSignup', 'getLogin')));
     $this->beforeFilter('csrf',
-                        array('only' => array('postSignup', 'postLogin')));
+      array('only' => array('postSignup', 'postLogin')));
     $this->beforeFilter('auth',
-                        array('only' => array('anyLogout')));
+      array('only' => array('anyLogout')));
   }
 
 
@@ -51,8 +51,8 @@ class UserController extends BaseController {
     }
     # Fail
     catch (Exception $e) {
-      return Redirect::to('/users/signup')->with('flash_message',
-        'Sign up failed; please try again.')
+      return Redirect::to('/users/signup')
+        ->withErrors(['message' => 'Sign up failed; please try again.'])
         ->withInput();
     }
 
@@ -80,7 +80,9 @@ class UserController extends BaseController {
       return Redirect::intended('/pastes')->with('flash_message', 'Welcome Back!');
     }
     else {
-      return Redirect::to('/users/login')->with('flash_message', 'Log in failed; please try again.');
+      return Redirect::to('/users/login')
+        ->withErrors(['message' => 'Log in failed; please try again.'])
+        ->withInput();
     }
 
     return Redirect::to('/users/login');

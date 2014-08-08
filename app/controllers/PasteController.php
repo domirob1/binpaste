@@ -3,48 +3,53 @@
 class PasteController extends BaseController {
 
   public function __construct() {
-    $this->beforeFilter('auth');
-    $this->beforeFilter('csrf', array('on' => 'post'));
+    $this->beforeFilter('auth', ['on' => ['put', 'post', 'delete']]);
+    $this->beforeFilter('csrf', ['on' => ['put', 'post']]);
   }
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-    $my_pastes = Auth::user()->pastes;
+  /**
+   * Display a listing of the resource.
+   *
+   * @return Response
+   */
+  public function index()
+  {
     $public_pastes = Paste::where('public', '=', True)->get();
-    $public_pastes = $public_pastes->filter(function ($paste) {
-                       return $paste->user_id != Auth::user()->id;});
+    if (Auth::check()) {
+      $my_pastes = Auth::user()->pastes;
+      $public_pastes = $public_pastes->filter(function ($paste) {
+        return $paste->user_id != Auth::user()->id;});
+    }
+    else {
+      $my_pastes = [];
+    }
     return View::make('paste_index', ['my_pastes' => $my_pastes,
-                                      'public_pastes' => $public_pastes]);
-	}
+      'public_pastes' => $public_pastes]);
+  }
 
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		return View::make('paste_create');
-	}
+  /**
+   * Show the form for creating a new resource.
+   *
+   * @return Response
+   */
+  public function create()
+  {
+    return View::make('paste_create');
+  }
 
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @return Response
+   */
+  public function store()
+  {
     $rules = array(
       'name' => 'required|max:255',
       'paste' => 'required|max:65535',
-      'public' => 'sometimes|required|boolean',
+      'public' => 'sometimes|required|accepted',
     );
 
     $validator = Validator::make(Input::all(), $rules);
@@ -67,60 +72,65 @@ class PasteController extends BaseController {
     } catch (Exception $e) {
       Log::error("Exception attempting to store paste '$paste->name' :\n$e\n");
       return Redirect::to('/pastes')->with('flash_message',
-                                           'Paste create failed; please try again.')
-                                    ->withInput();
+        'Paste create failed; please try again.')
+        ->withInput();
     }
 
     return Redirect::to('/pastes/' . $paste->id);
-	}
+  }
 
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
+  /**
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function show($id)
+  {
     $paste = Paste::findOrFail($id);
-    if (!$paste->public && ($paste->user != Auth::user())) {
-      return Redirect::to('/pastes')->with('flash_message',
-                                           'That paste isn\'t yours.');
+
+    if ($paste->public || 
+          (Auth::check() && Auth::user() == $paste->user)) {
+      return View::make('paste_show')->with('paste', $paste);
     }
-    return View::make('paste_show')->with('paste', $paste);
-	}
+    else {
+      return Redirect::to('/pastes')
+        ->with('flash_message',
+               'That is a private paste that doesn\'t belong to you');
+    }
+  }
 
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		$paste = Paste::findOrFail($id);
-    if ($paste->user != Auth::user()) {
+  /**
+   * Show the form for editing the specified resource.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function edit($id)
+  {
+    $paste = Paste::findOrFail($id);
+    if (!Auth::check() || $paste->user != Auth::user()) {
       return Redirect::to('/pastes')->with('flash_message',
-                                           'That paste isn\'t yours.');
+        'That paste isn\'t yours.');
     }
     return View::make('paste_edit')->with('paste', $paste);
-	}
+  }
 
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function update($id)
+  {
     $rules = array(
       'name' => 'required|max:255',
       'paste' => 'required|max:65535',
-      'public' => 'sometimes|required|boolean',
+      'public' => 'sometimes|required|accepted',
     );
 
     $validator = Validator::make(Input::all(), $rules);
@@ -132,10 +142,10 @@ class PasteController extends BaseController {
         ->withErrors($validator);
     }
 
-		$paste = Paste::findOrFail($id);
+    $paste = Paste::findOrFail($id);
     if ($paste->user != Auth::user()) {
       return Redirect::to('/pastes')->with('flash_message',
-                                           'That paste isn\'t yours.');
+        'That paste isn\'t yours.');
     }
     $paste->name = Input::get('name');
     $paste->paste = Input::get('paste');
@@ -145,38 +155,36 @@ class PasteController extends BaseController {
     } catch (Exception $e) {
       Log::error("Exception attempting to update paste '$paste->name' :\n$e\n");
       return Redirect::to('/pastes')->with('flash_message',
-                                           'Paste edit failed; please try again.')
-                                    ->withInput();
+        'Paste edit failed; please try again.')
+        ->withInput();
     }
 
     return Redirect::to('/pastes/' . $paste->id);
-	}
+  }
 
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		$paste = Paste::findOrFail($id);
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function destroy($id)
+  {
+    $paste = Paste::findOrFail($id);
     if ($paste->user != Auth::user()) {
       return Redirect::to('/pastes')->with('flash_message',
-                                           'That paste isn\'t yours.');
+        'That paste isn\'t yours.');
     }
     try {
       $paste->delete();
     } catch (Exception $e) {
       Log::error("Exception attempting to destroy paste '$paste->name' :\n$e\n");
       return Redirect::to('/pastes/' . $paste->id)
-               ->with('flash_message', 'Paste delete failed; please try again.');
+        ->with('flash_message', 'Paste delete failed; please try again.');
     }
 
     return Redirect::to('/pastes')->with('flash_message',
-                                         'Paste "' . $paste->name . '" deleted');
-	}
-
-
+      'Paste "' . $paste->name . '" deleted');
+  }
 }
