@@ -44,12 +44,13 @@ class PasteController extends BaseController {
     $paste = new Paste;
     $paste->name = Input::get('name');
     $paste->paste = Input::get('paste');
-    $paste->public = Input::get('public');
+    $paste->public = Input::get('public', False);
     $paste->user()->associate(Auth::user());
 
     try {
       $paste->save();
     } catch (Exception $e) {
+      Log::error("Exception attempting to store paste '$paste->name' :\n$e\n");
       return Redirect::to('/pastes')->with('flash_message',
                                            'Paste create failed; please try again.')
                                     ->withInput();
@@ -108,10 +109,11 @@ class PasteController extends BaseController {
     }
     $paste->name = Input::get('name');
     $paste->paste = Input::get('paste');
-    $paste->public = Input::get('public');
+    $paste->public = Input::get('public', False);
     try {
       $paste->save();
     } catch (Exception $e) {
+      Log::error("Exception attempting to update paste '$paste->name' :\n$e\n");
       return Redirect::to('/pastes')->with('flash_message',
                                            'Paste edit failed; please try again.')
                                     ->withInput();
@@ -137,6 +139,7 @@ class PasteController extends BaseController {
     try {
       $paste->delete();
     } catch (Exception $e) {
+      Log::error("Exception attempting to destroy paste '$paste->name' :\n$e\n");
       return Redirect::to('/pastes/' . $paste->id)
                ->with('flash_message', 'Paste delete failed; please try again.');
     }
