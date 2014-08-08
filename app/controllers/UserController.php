@@ -26,6 +26,20 @@ class UserController extends BaseController {
 
   # POST: http://localhost/users/signup
   public function postSignup() {
+    $rules = array(
+      'email' => 'email|unique:users,email',
+      'password' => 'min:3'   
+    );          
+
+    $validator = Validator::make(Input::all(), $rules);
+
+    if($validator->fails()) {
+      return Redirect::to('/users/signup')
+        ->with('flash_message', 'Sign up failed; please fix the errors listed below.')
+        ->withInput()
+        ->withErrors($validator);
+    }
+
     $user = new User;
     $user->email = Input::get('email');
     $user->password = Hash::make(Input::get('password'));
@@ -58,6 +72,8 @@ class UserController extends BaseController {
 
   # POST: http://localhost/users/login
   public function postLogin() {
+    # explicitly skip validation, try not to leak information about accounts
+
     $credentials = Input::only('email', 'password');
 
     if (Auth::attempt($credentials, $remember=True)) {

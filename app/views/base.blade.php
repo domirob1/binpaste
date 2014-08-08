@@ -66,6 +66,10 @@
         <div class='container starter-template flash-message'>{{ Session::get('flash_message') }}</div>
     @endif
 
+    @foreach($errors->all() as $message) 
+        <div class='container starter-template flash-message error'>{{ $message }}</div>
+    @endforeach
+
     <div class="container starter-template">
       @yield('content')
     </div>

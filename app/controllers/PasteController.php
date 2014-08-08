@@ -41,6 +41,21 @@ class PasteController extends BaseController {
 	 */
 	public function store()
 	{
+    $rules = array(
+      'name' => 'required|max:255',
+      'paste' => 'required|max:65535',
+      'public' => 'sometimes|required|boolean',
+    );
+
+    $validator = Validator::make(Input::all(), $rules);
+
+    if ($validator->fails()) {
+      return Redirect::to('/pastes/create')
+        ->with('flash_message', 'Paste create failed; please fix the errors listed below.')
+        ->withInput()
+        ->withErrors($validator);
+    }
+
     $paste = new Paste;
     $paste->name = Input::get('name');
     $paste->paste = Input::get('paste');
@@ -102,6 +117,21 @@ class PasteController extends BaseController {
 	 */
 	public function update($id)
 	{
+    $rules = array(
+      'name' => 'required|max:255',
+      'paste' => 'required|max:65535',
+      'public' => 'sometimes|required|boolean',
+    );
+
+    $validator = Validator::make(Input::all(), $rules);
+
+    if ($validator->fails()) {
+      return Redirect::to('/pastes/create')
+        ->with('flash_message', 'Paste update failed; please fix the errors listed below.')
+        ->withInput()
+        ->withErrors($validator);
+    }
+
 		$paste = Paste::findOrFail($id);
     if ($paste->user != Auth::user()) {
       return Redirect::to('/pastes')->with('flash_message',
