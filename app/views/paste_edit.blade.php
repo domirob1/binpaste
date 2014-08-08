@@ -4,26 +4,28 @@
 <h2>Edit Paste</h2>
 
 {{ Form::model($paste, ['method' => 'put',
-                        'action' => ['PasteController@update', $paste->id]]) }}
+                        'action' => ['PasteController@update', $paste->id],
+                        'class' => 'form-horizontal',
+                        'role' => 'form']) }}
 
-<p>
+<div class="form-group">
   {{ Form::label('name', 'Paste Name') }}
   {{ Form::text('name') }}
-</p>
+</div>
 
-<p>
+<div class="form-group">
   {{ Form::label('paste', 'Paste') }}
   {{ Form::textarea('paste') }}
-</p>
+</div>
 
-<p>
+<div class="form-group">
   {{ Form::label('public', 'Public') }}
   {{ Form::checkbox('public') }}
-</p>
+</div>
 
-<p>
-  {{ Form::submit('Paste It') }}
-</p>
+<div class="form-group">
+  {{ Form::submit('Paste It', ['class' => 'btn btn-default']) }}
+</div>
 
 {{ Form::close() }}
 @stop

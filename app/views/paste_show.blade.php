@@ -8,10 +8,10 @@
 </div>
 
 <div>
-  <a href="/pastes/{{{ $paste->id }}}/edit">Edit</a>
+  <a class="btn btn-default" href="/pastes/{{{ $paste->id }}}/edit">Edit</a>
   {{ Form::open(['method' => 'DELETE',
                  'action' => ['PasteController@destroy', $paste->id]]) }}
-    <a href='javascript:void(0)' onClick='parentNode.submit();return false;'>Delete</a>
+    <a class="btn btn-default" href='javascript:void(0)' onClick='parentNode.submit();return false;'>Delete</a>
   {{ Form::close() }}
 </div>
 @stop

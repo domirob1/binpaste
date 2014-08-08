@@ -61,7 +61,7 @@ class UserController extends BaseController {
     $credentials = Input::only('email', 'password');
 
     if (Auth::attempt($credentials, $remember=True)) {
-      return Redirect::intended('/')->with('flash_message', 'Welcome Back!');
+      return Redirect::intended('/pastes')->with('flash_message', 'Welcome Back!');
     }
     else {
       return Redirect::to('/users/login')->with('flash_message', 'Log in failed; please try again.');
